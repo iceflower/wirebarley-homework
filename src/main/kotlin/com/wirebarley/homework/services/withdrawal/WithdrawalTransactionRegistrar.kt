@@ -26,7 +26,7 @@ class WithdrawalTransactionRegistrar(
    * @param command 이체 거래 생성 명령서
    */
   @Transactional
-  fun addNewTransferTransaction(command: CreateWithdrawalTransactionCommand) {
+  fun addNewWithdrawalTransaction(command: CreateWithdrawalTransactionCommand) {
 
     val originAccountIdExists = accountsRepository.existsById(command.originAccountId)
 
@@ -49,7 +49,7 @@ class WithdrawalTransactionRegistrar(
     }
 
     // 이체 진행시, 출금계좌의 일일이체한도를 넘기게 된다면 예외 발생
-    val transferAmountsOfTheDay = transactionsRepository.sumTransferAmountsOfTheDay(command.originAccountId)
+    val transferAmountsOfTheDay = BigDecimal(transactionsRepository.sumTransferAmountsOfTheDay(command.originAccountId) ?: 0)
     if ((transferAmountsOfTheDay + (command.amount + feeAmount)) > BigDecimal(TransactionType.TRANSFER.amountLimit)) {
       throw RateLimitExceededException(TransactionType.TRANSFER, "일일 출금한도를 초과하여, 출금을 진행할 수 없습니다.")
     }
