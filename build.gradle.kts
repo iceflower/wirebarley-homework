@@ -26,7 +26,10 @@ extra.apply {
 val testcontainersVersion = rootProject.extra["testcontainers-version"]
 dependencies {
   implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.9.0")
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+  implementation("org.springframework.data:spring-data-redis")
+  implementation("org.springframework.boot:spring-boot-starter-aop")
+  implementation("org.redisson:redisson-spring-boot-starter:3.41.0")
+  implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -35,7 +38,8 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testImplementation("org.testcontainers:postgresql:$testcontainersVersion")
-	testImplementation("org.testcontainers:junit-jupiter:$testcontainersVersion")
+  testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
+  testImplementation("org.testcontainers:junit-jupiter:$testcontainersVersion")
   testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

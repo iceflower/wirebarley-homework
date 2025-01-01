@@ -7,8 +7,8 @@ import com.wirebarley.homework.services.common.exception.InvalidAmountException
 import com.wirebarley.homework.services.common.exception.NotFoundDataType
 import com.wirebarley.homework.services.common.exception.NotFoundException
 import com.wirebarley.homework.services.deposit.command.CreateDepositTransactionCommand
+import com.wirebarley.homework.util.lock.distributed.RedisDistributedLock
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 
 @Service
@@ -22,9 +22,8 @@ class DepositTransactionRegistrar(
    *
    * @param command 입금 거래 생성 명령서
    */
-  @Transactional
+  @RedisDistributedLock(key = "#deposit")
   fun addNewDepositTransaction(command: CreateDepositTransactionCommand) {
-
     val targetAccountIdExists = accountsRepository.existsById(command.targetAccountId)
 
     if (!targetAccountIdExists) {
