@@ -13,12 +13,14 @@ class PostgresTestContainerInitializer : ApplicationContextInitializer<Configura
 
   override fun initialize(ctx: ConfigurableApplicationContext) {
     postgresContainer.start()
+
     TestPropertyValues.of(
       "spring.datasource.url=" + postgresContainer.jdbcUrl,
       "spring.datasource.username=" + postgresContainer.username,
       "spring.datasource.password=" + postgresContainer.password,
-      "spring.sql.init.data-locations=classpath:db/postgres/dml.sql",
-      "spring.sql.init.schema-locations=classpath:db/postgres/ddl.sql"
+      "spring.datasource.driver-class-name=org.postgresql.Driver",
     ).applyTo(ctx.environment)
   }
+
+
 }

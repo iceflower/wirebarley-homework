@@ -1,6 +1,5 @@
 DROP TABLE IF EXISTS transactions;
 DROP TABLE IF EXISTS accounts;
-DROP FUNCTION IF EXISTS
 
 CREATE TABLE accounts
 (
@@ -13,7 +12,7 @@ CREATE TABLE accounts
   created_at                 TIMESTAMP    NOT NULL,
   created_by                 VARCHAR(100) NOT NULL,
   updated_at                 TIMESTAMP    NOT NULL,
-  updated_by                 VARCHAR(100) NOT NULL,
+  updated_by                 VARCHAR(100) NOT NULL
 );
 
 CREATE UNIQUE INDEX uk_account_owner_phone_number ON accounts (account_owner_phone_number);
@@ -58,7 +57,7 @@ CREATE TABLE transactions
   updated_by          VARCHAR(100)   NOT NULL,
 
   CONSTRAINT fk_transactions_origin_account_id FOREIGN KEY (origin_account_id) REFERENCES accounts (account_id),
-  CONSTRAINT fk_transactions_target_account_id FOREIGN KEY (target_account_id) REFERENCES accounts (account_id),
+  CONSTRAINT fk_transactions_target_account_id FOREIGN KEY (target_account_id) REFERENCES accounts (account_id)
 );
 
 CREATE INDEX idx_transactions_transaction_type ON transactions (transaction_type);
@@ -88,21 +87,3 @@ COMMENT
 ON COLUMN transactions.updated_at IS '최종수정시각';
 COMMENT
 ON COLUMN transactions.updated_by IS '최종수정자';
-
-
-CREATE FUNCTION fn_tsid_milli() RETURNS BIGINT AS $$
-DECLARE
-  -- Milliseconds precision
-  C_MILLI_PREC bigint := 10^3;
-  -- Random component bit length: 22 bits
-  C_RANDOM_LEN
-  bigint := 2^22;
-  -- TSID epoch: seconds since 2020-01-01Z
-  -- extract(epoch from '2020-01-01'::date)
-  C_TSID_EPOCH
-  bigint := 1577836800;
-BEGIN
-RETURN ((floor((extract('epoch' from clock_timestamp()) - C_TSID_EPOCH) * C_MILLI_PREC) *
-         C_RANDOM_LEN)::bigint) + (floor(random() * C_RANDOM_LEN)::bigint);
-END $$
-LANGUAGE plpgsql;
