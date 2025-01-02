@@ -42,6 +42,9 @@ class Accounts(
   @Column(name = "user_type")
   val userType: UserType,
 
+  @Column(name = "is_active_account")
+  var isActive: Boolean,
+
   @Column(name = "total_amount")
   var totalAmount: BigDecimal,
 
@@ -73,6 +76,7 @@ class Accounts(
         ownerPhoneNumber,
         ownerEmail,
         UserType.NORMAL_CUSTOMER,
+        true,
         BigDecimal.ZERO,
         Audit.create(requester)
       )
@@ -90,6 +94,21 @@ class Accounts(
     this.audit.update(requester)
   }
 
+  /**
+   * 계좌 잔고를 삭제 처리합니다.
+   *
+   * @param requester 요청자
+   */
+  fun setDelete(requester: String) {
+    this.isActive = false
+    this.audit.update(requester)
+  }
+
+  /**
+   * 계좌 정보 엔티티를 값 객체로 변환합니다.
+   *
+   * @return AccountInfo
+   */
   fun toVo() = AccountInfo(
     this.id!!,
     this.ownerName,

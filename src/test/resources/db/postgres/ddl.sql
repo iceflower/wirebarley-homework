@@ -8,6 +8,7 @@ CREATE TABLE accounts
   account_owner_phone_number VARCHAR(13)  NOT NULL CHECK (LENGTH(account_owner_phone_number) > 0),
   account_owner_email        VARCHAR(100) CHECK (LENGTH(account_owner_email) > 0),
   user_type                  VARCHAR(15),
+  is_active_account          BOOLEAN NOT NULL,
   total_amount               NUMERIC(32, 6) DEFAULT 0.000000 CHECK (total_amount >= 0),
   created_at                 TIMESTAMP    NOT NULL,
   created_by                 VARCHAR(100) NOT NULL,
@@ -15,8 +16,11 @@ CREATE TABLE accounts
   updated_by                 VARCHAR(100) NOT NULL
 );
 
-CREATE UNIQUE INDEX uk_account_owner_phone_number ON accounts (account_owner_phone_number);
-CREATE UNIQUE INDEX uk_account_owner_email ON accounts (account_owner_email);
+CREATE UNIQUE INDEX uk_account_owner_phone_number ON accounts (account_owner_phone_number)
+WHERE is_active_account is true;
+
+CREATE UNIQUE INDEX uk_account_owner_email ON accounts (account_owner_email)
+WHERE is_active_account is true;
 
 COMMENT
 ON TABLE accounts IS '계좌 정보 테이블';
@@ -30,6 +34,8 @@ COMMENT
 ON COLUMN accounts.account_owner_email IS '예금주 이메일 (UNIQUE, 1자 이상의 문자열만 입력 가능)';
 COMMENT
 ON COLUMN accounts.user_type IS '예금주 유형';
+COMMENT
+ON COLUMN accounts.is_active_account IS '현재 활성화된 계좌 여부 (true: 활성화됨, false: 비활성화됨)';
 COMMENT
 ON COLUMN accounts.total_amount IS '예금 잔고 (0 이상의 숫자만 입력 가능)';
 COMMENT
