@@ -7,11 +7,10 @@ import com.wirebarley.homework.services.common.exception.InvalidAmountException
 import com.wirebarley.homework.services.common.exception.NotFoundDataType
 import com.wirebarley.homework.services.common.exception.NotFoundException
 import com.wirebarley.homework.services.common.exception.RateLimitExceededException
-import com.wirebarley.homework.services.transfer.command.CreateTransferTransactionCommand
 import com.wirebarley.homework.services.withdrawal.command.CreateWithdrawalTransactionCommand
+import com.wirebarley.homework.util.lock.distributed.RedisDistributedLock
 import com.wirebarley.homework.vo.common.TransactionType
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 
 @Service
@@ -25,7 +24,7 @@ class WithdrawalTransactionRegistrar(
    *
    * @param command 이체 거래 생성 명령서
    */
-  @Transactional
+  @RedisDistributedLock(key = "#withdrawal")
   fun addNewWithdrawalTransaction(command: CreateWithdrawalTransactionCommand) {
 
     val originAccountIdExists = accountsRepository.existsById(command.originAccountId)
@@ -45,7 +44,8 @@ class WithdrawalTransactionRegistrar(
     val feeAmount = command.amount * TransactionType.WITHDRAWAL.feeRatio
     if ((originAccount.totalAmount - (command.amount + feeAmount)) < BigDecimal.ZERO) {
       throw InvalidAmountException(
-        "출금 계좌 잔고가 부족합니다. (출금계좌 잔고: ${originAccount.totalAmount}원, 수수료 포함 출금금액: ${(command.amount + feeAmount)})")
+        "출금 계좌 잔고가 부족합니다. (출금계좌 잔고: ${originAccount.totalAmount}원, 수수료 포함 출금금액: ${(command.amount + feeAmount)})"
+      )
     }
 
     // 이체 진행시, 출금계좌의 일일이체한도를 넘기게 된다면 예외 발생
