@@ -21,13 +21,13 @@ class AccountRemover(private val accountsRepository: AccountsRepository) {
     val accountIdExist = accountsRepository.existById(command.accountId)
 
     if (!accountIdExist) {
-      throw NotFoundException(NotFoundDataType.ACCOUNT_ID, "계좌번호를 찾을 수 없습니다.")
+      throw NotFoundException(NotFoundDataType.ACCOUNT_ID, "계좌번호를 찾을 수 없습니다")
     }
 
     val account = accountsRepository.findById(command.accountId).get()
 
-    if (account.totalAmount != BigDecimal.ZERO) {
-      throw InvalidAmountException("삭제 요청하신 계좌에 잔고가 존재합니다. 잔고를 출금 혹은 이체해주세요.")
+    if (account.totalAmount != BigDecimal.ZERO.setScale(6)) {
+      throw InvalidAmountException("삭제 요청하신 계좌에 잔고가 존재합니다. 잔고를 출금 혹은 이체해주세요")
     }
 
     account.setDelete(command.requester)

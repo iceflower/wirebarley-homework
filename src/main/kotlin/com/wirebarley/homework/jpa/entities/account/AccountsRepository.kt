@@ -8,7 +8,7 @@ interface AccountsRepository : JpaRepository<Accounts, Long> {
 
   @Query(value = "select case when (count(a) = 1) then true else false end " +
     "from Accounts a " +
-    "where a.isActive = true and a.ownerPhoneNumber = :phoneNumber")
+    "where a.isActive = true and a.id = :id")
   fun existById(@Param("id") accountId: Long): Boolean
 
   @Query(value = "select case when (count(a) = 1) then true else false end " +
