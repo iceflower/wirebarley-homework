@@ -20,6 +20,7 @@ import org.springframework.test.context.TestPropertySource
 import java.math.BigDecimal
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -95,7 +96,7 @@ class DepositTransactionRegistrarTest {
       @Test
       @DisplayName("입금계좌에 입금이 이루어진다")
       fun it_runs_successful() {
-        assertDoesNotThrow {
+        val result = assertDoesNotThrow {
           subject(
             CreateDepositTransactionCommand(
               38352658567418872,
@@ -105,6 +106,10 @@ class DepositTransactionRegistrarTest {
             )
           )
         }
+
+        assertEquals(38352658567418872, result.targetAccountId)
+        assertEquals(BigDecimal(5000), result.amount)
+        assertEquals(BigDecimal.ZERO.setScale(1), result.feeAmount)
 
         val afterTargetAccount = accountsRepository.findById(38352658567418872).get()
         assertEquals(BigDecimal(5000).setScale(6), afterTargetAccount.totalAmount)

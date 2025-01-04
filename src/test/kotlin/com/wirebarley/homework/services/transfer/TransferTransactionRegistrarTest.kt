@@ -182,7 +182,6 @@ class TransferTransactionRegistrarTest {
 
       @BeforeEach
       fun prepare() {
-
         // 출금계좌에 테스트용 잔고 입금
         val depositTransactionRegistrar = DepositTransactionRegistrar(accountsRepository, transactionsRepository)
         depositTransactionRegistrar.addNewDepositTransaction(
@@ -198,7 +197,7 @@ class TransferTransactionRegistrarTest {
       @Test
       @DisplayName("출금계좌에서 이체계좌로 이체가 이루어진다")
       fun it_runs_successful() {
-        assertDoesNotThrow {
+        val result = assertDoesNotThrow {
           subject(
             CreateTransferTransactionCommand(
               38352658567418872,
@@ -219,6 +218,10 @@ class TransferTransactionRegistrarTest {
           afterOriginAccount.totalAmount
         )
         assertEquals(BigDecimal(500).setScale(6), afterTargetAccount.totalAmount)
+        assertEquals(38352658567418872, result.originAccountId)
+        assertEquals(38352658567418873, result.targetAccountId)
+        assertEquals(BigDecimal(500), result.amount)
+        assertEquals((BigDecimal(500) * TransactionType.TRANSFER.feeRatio).setScale(1), result.feeAmount)
       }
     }
   }

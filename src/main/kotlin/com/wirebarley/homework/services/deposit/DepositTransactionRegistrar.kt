@@ -7,9 +7,11 @@ import com.wirebarley.homework.services.common.exception.InvalidAmountException
 import com.wirebarley.homework.services.common.exception.NotFoundDataType
 import com.wirebarley.homework.services.common.exception.NotFoundException
 import com.wirebarley.homework.services.deposit.command.CreateDepositTransactionCommand
+import com.wirebarley.homework.services.deposit.statement.DepositStatement
 import com.wirebarley.homework.util.lock.distributed.RedisDistributedLock
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
+import java.util.concurrent.TimeUnit
 
 @Service
 class DepositTransactionRegistrar(
@@ -22,8 +24,8 @@ class DepositTransactionRegistrar(
    *
    * @param command 입금 거래 생성 명령서
    */
-  @RedisDistributedLock(key = "#deposit")
-  fun addNewDepositTransaction(command: CreateDepositTransactionCommand) {
+  @RedisDistributedLock(key = "#deposit", timeUnit = TimeUnit.MICROSECONDS, waitTime = 100L, leaseTime = 100L)
+  fun addNewDepositTransaction(command: CreateDepositTransactionCommand): DepositStatement {
     val targetAccountIdExists = accountsRepository.existsById(command.targetAccountId)
 
     if (!targetAccountIdExists) {
@@ -44,10 +46,18 @@ class DepositTransactionRegistrar(
       command.requester
     )
 
-    transactionsRepository.save(depositTransaction)
+    val savedTransaction = transactionsRepository.save(depositTransaction)
 
     // 입금계좌 잔액 가산
     targetAccount.correctAmount(targetAccount.totalAmount + command.amount, command.requester)
     accountsRepository.save(targetAccount)
+
+
+    return DepositStatement(
+      savedTransaction.targetAccount!!.id!!,
+      savedTransaction.amount,
+      savedTransaction.fee,
+      savedTransaction.audit.updatedAt
+    )
   }
 }
