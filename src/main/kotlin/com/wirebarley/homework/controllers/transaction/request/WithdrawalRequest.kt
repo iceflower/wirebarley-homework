@@ -1,0 +1,29 @@
+package com.wirebarley.homework.controllers.transaction.request
+
+import jakarta.validation.constraints.Min
+import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Pattern
+
+/**
+ * 출금요청 객체.
+ *
+ * @property originAccountId 출금계좌
+ * @property amount 출금액
+ * @property email 요청자 이메일
+ */
+data class WithdrawalRequest(
+  @field:NotNull(message = "출금계좌는 필수값입니다.")
+  @field:Min(value = 10000000000000000, message = "출금계좌는 [10000000000000000] 이상의 17자리 숫자여야 합니다.")
+  val originAccountId: Long?,
+
+  @field:NotNull(message = "출금액은 필수값입니다.")
+  @field:Min(value = 1, message = "이체액은 1원 이상의 숫자여야 합니다.")
+  val amount: Long?,
+
+  @field:NotNull(message = "이메일은 필수값입니다.")
+  @field:Pattern(
+    regexp = "^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}\$",
+    message = "xxx@xxx.com, xxx@.xxx.co.kr 등과 같은 이메일 주소 형식만 입력이 가능합니다."
+  )
+  val email: String?
+)
