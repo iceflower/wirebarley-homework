@@ -6,5 +6,5 @@ package com.wirebarley.homework.services.common.exception
 class AlreadyExistException(val dataType: ExistDataType, override val message: String?): RuntimeException()
 
 enum class ExistDataType {
-  PHONE_NUMBER, EMAIL
+  PHONE_NUMBER, EMAIL, UNKNOWN
 }
