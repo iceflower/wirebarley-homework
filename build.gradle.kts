@@ -29,6 +29,7 @@ dependencies {
   implementation("org.springframework.data:spring-data-redis")
   implementation("org.springframework.boot:spring-boot-starter-aop")
   implementation("org.redisson:redisson-spring-boot-starter:3.41.0")
+  implementation("org.springframework.boot:spring-boot-starter-validation")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")

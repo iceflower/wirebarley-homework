@@ -7,15 +7,18 @@ import com.wirebarley.homework.services.common.exception.InvalidAmountException
 import com.wirebarley.homework.services.common.exception.NotFoundDataType
 import com.wirebarley.homework.services.common.exception.NotFoundException
 import com.wirebarley.homework.util.lock.distributed.RedisDistributedLock
+import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.util.concurrent.TimeUnit
 
+@Service
 class AccountRemover(private val accountsRepository: AccountsRepository) {
 
   /**
    * 계좌를 삭제합니다.
    *
    * @param command 계좌 삭제 명령서 객체
+   * @return 계좌 삭제 결과 명세
    */
   @RedisDistributedLock(key = "#remove-account", timeUnit = TimeUnit.MICROSECONDS, waitTime = 100L, leaseTime = 100L)
   fun remove(command: RemoveAccountCommand): RemovedAccountStatement {
