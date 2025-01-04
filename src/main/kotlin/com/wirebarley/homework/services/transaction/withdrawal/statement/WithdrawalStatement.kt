@@ -1,4 +1,4 @@
-package com.wirebarley.homework.services.withdrawal.statement
+package com.wirebarley.homework.services.transaction.withdrawal.statement
 
 import java.math.BigDecimal
 import java.time.LocalDateTime

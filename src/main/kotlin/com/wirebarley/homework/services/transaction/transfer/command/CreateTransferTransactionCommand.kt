@@ -1,4 +1,4 @@
-package com.wirebarley.homework.services.transfer.command
+package com.wirebarley.homework.services.transaction.transfer.command
 
 import com.wirebarley.homework.vo.common.TransactionChannel
 import java.math.BigDecimal
