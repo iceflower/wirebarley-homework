@@ -31,6 +31,7 @@ import kotlin.test.assertNotEquals
 @PostgresTestContainer
 @TestPropertySource(locations = ["classpath:application-test.yml"])
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@DisplayName("TransferTransactionRegistrar 클래스의")
 class TransferTransactionRegistrarTest {
 
   @Autowired
