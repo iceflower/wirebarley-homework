@@ -24,7 +24,7 @@ class AccountTransactionsInformant(
    * @param accountId 거래내역 조회대상 계좌번호
    * @return 페이징 처리된 거래내역
    */
-  @RedisDistributedLock(key = "#query-account-transactions", timeUnit = TimeUnit.MICROSECONDS, waitTime = 100L, leaseTime = 100L)
+  @RedisDistributedLock(key = "#query-account-transactions", timeUnit = TimeUnit.MICROSECONDS, waitTime = 150L, leaseTime = 100L, readOnly = true)
   fun transactions(accountId: Long, pageable: Pageable): Page<TransactionInfo> {
 
     val accountIdExists = accountsRepository.existById(accountId)

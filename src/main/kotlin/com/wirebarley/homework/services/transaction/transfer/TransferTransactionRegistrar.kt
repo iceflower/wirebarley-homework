@@ -26,7 +26,7 @@ class TransferTransactionRegistrar(
    *
    * @param command 이체 거래 생성 명령서
    */
-  @RedisDistributedLock(key = "#transfer", timeUnit = TimeUnit.MICROSECONDS, waitTime = 100L, leaseTime = 100L)
+  @RedisDistributedLock(key = "#transfer", timeUnit = TimeUnit.MICROSECONDS, waitTime = 150L, leaseTime = 100L)
   fun addNewTransferTransaction(command: CreateTransferTransactionCommand): TransferStatement {
 
     val originAccountIdExists = accountsRepository.existsById(command.originAccountId)

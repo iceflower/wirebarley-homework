@@ -26,7 +26,7 @@ class WithdrawalTransactionRegistrar(
    *
    * @param command 이체 거래 생성 명령서
    */
-  @RedisDistributedLock(key = "#withdrawal", timeUnit = TimeUnit.MICROSECONDS, waitTime = 100L, leaseTime = 100L)
+  @RedisDistributedLock(key = "#withdrawal", timeUnit = TimeUnit.MICROSECONDS, waitTime = 150L, leaseTime = 100L)
   fun addNewWithdrawalTransaction(command: CreateWithdrawalTransactionCommand): WithdrawalStatement {
 
     val originAccountIdExists = accountsRepository.existsById(command.originAccountId)
