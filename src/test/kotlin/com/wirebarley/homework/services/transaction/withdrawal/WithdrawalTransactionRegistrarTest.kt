@@ -30,6 +30,7 @@ import kotlin.test.assertEquals
 @PostgresTestContainer
 @TestPropertySource(locations = ["classpath:application-test.yml"])
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@DisplayName("WithdrawalTransactionRegistrar 클래스의")
 class WithdrawalTransactionRegistrarTest {
   @Autowired
   lateinit var accountsRepository: AccountsRepository

@@ -26,6 +26,7 @@ import kotlin.test.assertEquals
 @PostgresTestContainer
 @TestPropertySource(locations = ["classpath:application-test.yml"])
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@DisplayName("DepositTransactionRegistrar 클래스의")
 class DepositTransactionRegistrarTest {
 
   @Autowired
