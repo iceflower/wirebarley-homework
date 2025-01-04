@@ -1,11 +1,11 @@
-package com.wirebarley.homework.services.deposit
+package com.wirebarley.homework.services.transaction.deposit
 
 import com.wirebarley.homework.PostgresTestContainer
 import com.wirebarley.homework.jpa.entities.account.AccountsRepository
 import com.wirebarley.homework.jpa.entities.transaction.TransactionsRepository
 import com.wirebarley.homework.services.common.exception.InvalidAmountException
 import com.wirebarley.homework.services.common.exception.NotFoundException
-import com.wirebarley.homework.services.deposit.command.CreateDepositTransactionCommand
+import com.wirebarley.homework.services.transaction.deposit.command.CreateDepositTransactionCommand
 import com.wirebarley.homework.vo.common.TransactionChannel
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -20,7 +20,6 @@ import org.springframework.test.context.TestPropertySource
 import java.math.BigDecimal
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 @DataJpaTest
 @ActiveProfiles("test")

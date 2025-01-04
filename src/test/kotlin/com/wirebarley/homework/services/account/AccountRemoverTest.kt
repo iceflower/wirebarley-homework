@@ -6,8 +6,8 @@ import com.wirebarley.homework.jpa.entities.transaction.TransactionsRepository
 import com.wirebarley.homework.services.account.command.RemoveAccountCommand
 import com.wirebarley.homework.services.common.exception.InvalidAmountException
 import com.wirebarley.homework.services.common.exception.NotFoundException
-import com.wirebarley.homework.services.deposit.DepositTransactionRegistrar
-import com.wirebarley.homework.services.deposit.command.CreateDepositTransactionCommand
+import com.wirebarley.homework.services.transaction.deposit.DepositTransactionRegistrar
+import com.wirebarley.homework.services.transaction.deposit.command.CreateDepositTransactionCommand
 import com.wirebarley.homework.vo.common.TransactionChannel
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -123,7 +123,7 @@ class AccountRemoverTest {
         assertFalse { accountsRepository.findById(38352658567418872).get().isActive }
 
         val originUpdatedAt = accountsRepository.findById(result.accountId).get().audit.updatedAt
-        assertEquals (result.removedAt, originUpdatedAt)
+        assertEquals(result.removedAt, originUpdatedAt)
       }
     }
   }

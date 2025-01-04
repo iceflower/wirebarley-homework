@@ -1,4 +1,4 @@
-package com.wirebarley.homework.services.deposit
+package com.wirebarley.homework.services.transaction.deposit
 
 import com.wirebarley.homework.jpa.entities.account.AccountsRepository
 import com.wirebarley.homework.jpa.entities.transaction.Transactions
@@ -6,8 +6,8 @@ import com.wirebarley.homework.jpa.entities.transaction.TransactionsRepository
 import com.wirebarley.homework.services.common.exception.InvalidAmountException
 import com.wirebarley.homework.services.common.exception.NotFoundDataType
 import com.wirebarley.homework.services.common.exception.NotFoundException
-import com.wirebarley.homework.services.deposit.command.CreateDepositTransactionCommand
-import com.wirebarley.homework.services.deposit.statement.DepositStatement
+import com.wirebarley.homework.services.transaction.deposit.command.CreateDepositTransactionCommand
+import com.wirebarley.homework.services.transaction.deposit.statement.DepositStatement
 import com.wirebarley.homework.util.lock.distributed.RedisDistributedLock
 import org.springframework.stereotype.Service
 import java.math.BigDecimal

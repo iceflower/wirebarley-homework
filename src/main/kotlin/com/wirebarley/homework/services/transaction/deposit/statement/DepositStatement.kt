@@ -1,4 +1,4 @@
-package com.wirebarley.homework.services.deposit.statement
+package com.wirebarley.homework.services.transaction.deposit.statement
 
 import java.math.BigDecimal
 import java.time.LocalDateTime

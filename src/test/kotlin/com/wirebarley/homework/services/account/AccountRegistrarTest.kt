@@ -87,7 +87,7 @@ class AccountRegistrarTest {
       @Test
       @DisplayName("계좌 생성에 성공한다")
       fun it_runs_successfully() {
-        val result = assertDoesNotThrow  {
+        val result = assertDoesNotThrow {
           subject(
             CreateNewAccountCommand(
               "테스트",
@@ -102,7 +102,7 @@ class AccountRegistrarTest {
         assertTrue { accountIdIsExist }
 
         val originUpdatedAt = accountsRepository.findById(result.accountId).get().audit.updatedAt
-        assertEquals (result.registeredAt, originUpdatedAt)
+        assertEquals(result.registeredAt, originUpdatedAt)
       }
     }
   }
