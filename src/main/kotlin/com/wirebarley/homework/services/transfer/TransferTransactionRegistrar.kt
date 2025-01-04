@@ -8,10 +8,12 @@ import com.wirebarley.homework.services.common.exception.NotFoundDataType
 import com.wirebarley.homework.services.common.exception.NotFoundException
 import com.wirebarley.homework.services.common.exception.RateLimitExceededException
 import com.wirebarley.homework.services.transfer.command.CreateTransferTransactionCommand
+import com.wirebarley.homework.services.transfer.statement.TransferStatement
 import com.wirebarley.homework.util.lock.distributed.RedisDistributedLock
 import com.wirebarley.homework.vo.common.TransactionType
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
+import java.util.concurrent.TimeUnit
 
 @Service
 class TransferTransactionRegistrar(
@@ -24,8 +26,8 @@ class TransferTransactionRegistrar(
    *
    * @param command 이체 거래 생성 명령서
    */
-  @RedisDistributedLock(key = "#transfer")
-  fun addNewTransferTransaction(command: CreateTransferTransactionCommand) {
+  @RedisDistributedLock(key = "#transfer", timeUnit = TimeUnit.MICROSECONDS, waitTime = 100L, leaseTime = 100L)
+  fun addNewTransferTransaction(command: CreateTransferTransactionCommand): TransferStatement {
 
     val originAccountIdExists = accountsRepository.existsById(command.originAccountId)
 
@@ -69,7 +71,7 @@ class TransferTransactionRegistrar(
       command.requester
     )
 
-    transactionsRepository.save(depositTransaction)
+    val savedTransaction = transactionsRepository.save(depositTransaction)
 
     // 출금계좌 잔액 차감
     originAccount.correctAmount((originAccount.totalAmount - command.amount - feeAmount), command.requester)
@@ -78,5 +80,13 @@ class TransferTransactionRegistrar(
     // 입금계좌 잔액 가산
     targetAccount.correctAmount(targetAccount.totalAmount + command.amount, command.requester)
     accountsRepository.save(targetAccount)
+
+    return TransferStatement(
+      savedTransaction.originAccount!!.id!!,
+      savedTransaction.targetAccount!!.id!!,
+      savedTransaction.amount,
+      savedTransaction.fee,
+      savedTransaction.audit.updatedAt
+    )
   }
 }

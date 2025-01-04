@@ -15,6 +15,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.TestPropertySource
 import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -85,7 +87,7 @@ class AccountRegistrarTest {
       @Test
       @DisplayName("계좌 생성에 성공한다")
       fun it_runs_successfully() {
-        assertDoesNotThrow  {
+        val result = assertDoesNotThrow  {
           subject(
             CreateNewAccountCommand(
               "테스트",
@@ -95,6 +97,12 @@ class AccountRegistrarTest {
             )
           )
         }
+
+        val accountIdIsExist = accountsRepository.existById(result.accountId)
+        assertTrue { accountIdIsExist }
+
+        val originUpdatedAt = accountsRepository.findById(result.accountId).get().audit.updatedAt
+        assertEquals (result.registeredAt, originUpdatedAt)
       }
     }
   }

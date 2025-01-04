@@ -8,12 +8,13 @@ import com.wirebarley.homework.services.common.exception.NotFoundException
 import com.wirebarley.homework.services.common.exception.RateLimitExceededException
 import com.wirebarley.homework.services.deposit.DepositTransactionRegistrar
 import com.wirebarley.homework.services.deposit.command.CreateDepositTransactionCommand
-import com.wirebarley.homework.services.transfer.command.CreateTransferTransactionCommand
 import com.wirebarley.homework.services.withdrawal.command.CreateWithdrawalTransactionCommand
 import com.wirebarley.homework.vo.common.TransactionChannel
+import com.wirebarley.homework.vo.common.TransactionType
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
@@ -22,6 +23,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.TestPropertySource
 import java.math.BigDecimal
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -58,7 +60,7 @@ class WithdrawalTransactionRegistrarTest {
         assertThrows<NotFoundException> {
           subject(
             CreateWithdrawalTransactionCommand(
-             -1,
+              -1,
               BigDecimal(500),
               TransactionChannel.ONLINE,
               "test"
@@ -87,7 +89,6 @@ class WithdrawalTransactionRegistrarTest {
         }
       }
     }
-
 
     @Nested
     @DisplayName("1원 미만의 출금액이 주어지면")
@@ -139,6 +140,48 @@ class WithdrawalTransactionRegistrarTest {
             )
           )
         }
+      }
+    }
+
+    @Nested
+    @DisplayName("출금계좌, 잔액, 출금금액, 일일출금한도 등, 출금 가능 조건에 문제 없을 경우")
+    inner class ContextWith_all_conditions_valid {
+      @BeforeEach
+      fun prepare() {
+        // 출금계좌에 테스트용 잔고 입금
+        val depositTransactionRegistrar = DepositTransactionRegistrar(accountsRepository, transactionsRepository)
+        depositTransactionRegistrar.addNewDepositTransaction(
+          CreateDepositTransactionCommand(
+            38352658567418872,
+            BigDecimal(10000),
+            TransactionChannel.BANK_TELLER,
+            "test"
+          )
+        )
+      }
+
+      @Test
+      @DisplayName("출금이 정상적으로 진행된다")
+      fun it_runs_successfully() {
+        val result = assertDoesNotThrow {
+          subject(
+            CreateWithdrawalTransactionCommand(
+              38352658567418872,
+              BigDecimal(5000),
+              TransactionChannel.ONLINE,
+              "test"
+            )
+          )
+        }
+
+        val afterOriginAccount = accountsRepository.findById(38352658567418872).get()
+        assertEquals(
+          BigDecimal(10000).setScale(6) - (BigDecimal(5000) + ((BigDecimal(5000) * TransactionType.WITHDRAWAL.feeRatio))),
+          afterOriginAccount.totalAmount
+        )
+
+        assertEquals(BigDecimal(5000), result.amount)
+        assertEquals((BigDecimal(5000).setScale(1) * TransactionType.WITHDRAWAL.feeRatio), result.feeAmount)
       }
     }
   }

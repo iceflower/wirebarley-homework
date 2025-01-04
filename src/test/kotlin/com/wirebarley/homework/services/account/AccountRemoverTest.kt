@@ -21,6 +21,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.TestPropertySource
 import java.math.BigDecimal
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -109,7 +110,7 @@ class AccountRemoverTest {
       @Test
       @DisplayName("잔고 삭제에 성공한다")
       fun it_runs_successfully() {
-        assertDoesNotThrow {
+        val result = assertDoesNotThrow {
           subject(
             RemoveAccountCommand(
               38352658567418872,
@@ -120,6 +121,9 @@ class AccountRemoverTest {
 
         assertTrue { accountsRepository.existsById(38352658567418872) }
         assertFalse { accountsRepository.findById(38352658567418872).get().isActive }
+
+        val originUpdatedAt = accountsRepository.findById(result.accountId).get().audit.updatedAt
+        assertEquals (result.removedAt, originUpdatedAt)
       }
     }
   }
