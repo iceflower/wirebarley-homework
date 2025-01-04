@@ -6,5 +6,5 @@ package com.wirebarley.homework.services.common.exception
 class NotFoundException(val notFoundDataType: NotFoundDataType, override val message: String?) : RuntimeException()
 
 enum class NotFoundDataType {
-  ACCOUNT_ID, UNKNOWN
+  ACCOUNT_ID, TRANSACTION_CHANNEL, UNKNOWN
 }
