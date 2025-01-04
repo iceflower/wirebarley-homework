@@ -34,7 +34,7 @@ class AccountTransactionsInformant(
     }
 
     val pagedList = transactionsRepository.findAllTransactions(accountId, pageable)
-    val voContents = pagedList.content.map { it.toVo() }
+    val voContents = pagedList.content.map { it.toVo()!! }
 
     return PageImpl(voContents, pageable, pagedList.totalElements)
   }

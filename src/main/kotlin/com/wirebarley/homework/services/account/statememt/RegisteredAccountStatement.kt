@@ -1,5 +1,6 @@
 package com.wirebarley.homework.services.account.statememt
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.LocalDateTime
 
 /**
@@ -10,5 +11,6 @@ import java.time.LocalDateTime
  */
 data class RegisteredAccountStatement(
   val accountId: Long,
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   val registeredAt: LocalDateTime
 )

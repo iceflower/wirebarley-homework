@@ -17,6 +17,7 @@ class AccountRegistrar(private val accountsRepository: AccountsRepository) {
    * 계좌를 신규 개설합니다.
    *
    * @param command 계좌 신규개설 명령서
+   * @return 계좌 생성 결과 명세
    */
   @RedisDistributedLock(key = "#create-new-account", timeUnit = TimeUnit.MICROSECONDS, waitTime = 100L, leaseTime = 100L)
   fun register(command: CreateNewAccountCommand): RegisteredAccountStatement {

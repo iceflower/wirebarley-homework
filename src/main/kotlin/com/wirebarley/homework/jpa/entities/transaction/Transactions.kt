@@ -4,10 +4,7 @@ import com.wirebarley.homework.jpa.entities.account.Accounts
 import com.wirebarley.homework.jpa.entities.common.Audit
 import com.wirebarley.homework.vo.common.TransactionChannel
 import com.wirebarley.homework.vo.common.TransactionType
-import com.wirebarley.homework.vo.transaction.DepositInfo
 import com.wirebarley.homework.vo.transaction.TransactionInfo
-import com.wirebarley.homework.vo.transaction.TransferInfo
-import com.wirebarley.homework.vo.transaction.WithdrawalInfo
 import io.hypersistence.utils.hibernate.id.Tsid
 import jakarta.persistence.Column
 import jakarta.persistence.Embedded
@@ -167,18 +164,37 @@ class Transactions(
    *
    * @return 입금 거래일 경우 `DepositInfo`, 출금 거래일 경우 `WithdrawalInfo`, 이체 거래일 경우 `TransferInfo`
    */
-  fun toVo(): TransactionInfo {
+  fun toVo(): TransactionInfo? {
     return when (this.transactionType) {
-      TransactionType.DEPOSIT -> DepositInfo(this.id!!, this.transactionChannel, this.targetAccount!!.id!!, this.fee, this.amount)
-      TransactionType.WITHDRAWAL -> WithdrawalInfo(this.id!!, this.transactionChannel, this.originAccount!!.id!!, this.fee, this.amount)
-      TransactionType.TRANSFER -> TransferInfo(
+      TransactionType.DEPOSIT -> TransactionInfo.deposit(
+        this.id!!,
+        this.transactionChannel,
+        this.targetAccount!!.id!!,
+        this.fee,
+        this.amount,
+        this.audit.updatedAt
+      )
+
+      TransactionType.WITHDRAWAL -> TransactionInfo.withdrawal(
+        this.id!!,
+        this.transactionChannel,
+        this.originAccount!!.id!!,
+        this.fee,
+        this.amount,
+        this.audit.updatedAt
+      )
+
+      TransactionType.TRANSFER -> TransactionInfo.transfer(
         this.id!!,
         this.transactionChannel,
         this.originAccount!!.id!!,
         this.targetAccount!!.id!!,
         this.fee,
-        this.amount
+        this.amount,
+        this.audit.updatedAt
       )
+
+      else -> null
     }
   }
 }
