@@ -1,6 +1,5 @@
 package com.wirebarley.homework.controllers.transaction
 
-import com.wirebarley.homework.controllers.account.request.RemoveAccountRequest
 import com.wirebarley.homework.controllers.transaction.request.DepositRequest
 import com.wirebarley.homework.controllers.transaction.request.TransferRequest
 import com.wirebarley.homework.controllers.transaction.request.WithdrawalRequest
@@ -16,7 +15,6 @@ import com.wirebarley.homework.services.transaction.transfer.command.CreateTrans
 import com.wirebarley.homework.services.transaction.withdrawal.WithdrawalTransactionRegistrar
 import com.wirebarley.homework.services.transaction.withdrawal.command.CreateWithdrawalTransactionCommand
 import com.wirebarley.homework.vo.common.TransactionChannel
-import com.wirebarley.homework.vo.common.TransactionType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -122,7 +120,7 @@ class TransactionsRestController(
    * @return 열거형 값으로 이루어진 거래채널 값
    */
   private fun castTransactionChannel(strTransactionChannel: String): TransactionChannel {
-    val set = TransactionType.entries
+    val set = TransactionChannel.entries
       .map { it.toString() }
       .toSet()
 

@@ -40,7 +40,14 @@ class WithdrawalTransactionRegistrar(
     }
 
     val originAccount = accountsRepository.findById(command.originAccountId).get()
-    // 이체 진행시, 출금게좌의 잔액이 음수가 된다면 예외 발생
+
+    if (originAccount.totalAmount == BigDecimal.ZERO) {
+      throw InvalidAmountException(
+        "출금 계좌 잔고가 부족합니다. (출금계좌 잔고: ${originAccount.totalAmount}원)"
+      )
+    }
+
+    // 출금 진행시, 출금게좌의 잔액이 음수가 된다면 예외 발생
     val feeAmount = command.amount * TransactionType.WITHDRAWAL.feeRatio
     if ((originAccount.totalAmount - (command.amount + feeAmount)) < BigDecimal.ZERO) {
       throw InvalidAmountException(
