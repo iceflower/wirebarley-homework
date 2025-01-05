@@ -16,6 +16,6 @@ spring:
     defer-datasource-initialization: true
   sql:
     init:
-      schema-locations: db/postgres/ddl.sql
-      data-locations: db/postgres/dml.sql
+      schema-locations: classpath:db/postgres/ddl.sql
+      data-locations: classpath:db/postgres/dml.sql
       mode: always

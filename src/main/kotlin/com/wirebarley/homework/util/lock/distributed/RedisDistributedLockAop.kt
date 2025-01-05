@@ -1,12 +1,12 @@
 package com.wirebarley.homework.util.lock.distributed
 
 import com.wirebarley.homework.util.CustomSpringELParser
-import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.reflect.MethodSignature
 import org.redisson.api.RedissonClient
 import org.slf4j.LoggerFactory
+import org.springframework.aop.aspectj.MethodInvocationProceedingJoinPoint
 import org.springframework.stereotype.Component
 
 /**
@@ -28,7 +28,7 @@ class RedisDistributedLockAop(
    * 레디스를 활용한 분산락 기능을 활성화합니다.
    */
   @Around("@annotation(com.wirebarley.homework.util.lock.distributed.RedisDistributedLock)")
-  fun lock(joinPoint: ProceedingJoinPoint): Any {
+  fun lock(joinPoint: MethodInvocationProceedingJoinPoint): Any {
 
     val signature = joinPoint.signature as MethodSignature
     val method = signature.method
