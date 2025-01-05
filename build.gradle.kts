@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "com.wirebarley.homework"
-version = "0.0.1-SNAPSHOT"
+version = "20250105-01"
 
 java {
 	toolchain {
@@ -59,3 +59,5 @@ allOpen {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+
+

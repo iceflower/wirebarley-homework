@@ -1,0 +1,17 @@
+version: "3.9"  # optional since v1.27.0
+
+services:
+  redis: # container name
+    image: redis:7.4.1-alpine
+    ports: # 바인딩할 포트:내부 포트
+      - "6379:6379"
+    restart: always
+  postgres: # container name
+    image: postgres:17.2-alpine3.21
+    ports: # 바인딩할 포트:내부 포트
+      - "5432:5432"
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
