@@ -26,7 +26,6 @@ class AccountTransactionsInformant(
    */
   @RedisDistributedLock(key = "#query-account-transactions", timeUnit = TimeUnit.MICROSECONDS, waitTime = 150L, leaseTime = 100L, readOnly = true)
   fun transactions(accountId: Long, pageable: Pageable): Page<TransactionInfo> {
-
     val accountIdExists = accountsRepository.existById(accountId)
 
     if (!accountIdExists) {
